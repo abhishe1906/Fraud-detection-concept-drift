@@ -41,3 +41,6 @@ This project emphasizes **production-aware evaluation** rather than leaderboard 
 ## Notebook
 - [Fraud Detection Under Concept Drift](notebooks/fraud_detection_concept_drift.ipynb)
 
+pictures/
+recall_over_time.png
+precision_over_time.png
