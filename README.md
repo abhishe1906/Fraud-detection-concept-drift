@@ -38,4 +38,6 @@ The full analysis is available on Kaggle:
 
 ## Notes
 This project emphasizes **production-aware evaluation** rather than leaderboard optimization.
+## Notebook
+- [Fraud Detection Under Concept Drift](notebooks/fraud_detection_concept_drift.ipynb)
 
