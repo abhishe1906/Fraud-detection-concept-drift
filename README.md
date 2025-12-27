@@ -38,8 +38,7 @@ The full analysis is available on Kaggle:
 
 ## Notes
 This project emphasizes **production-aware evaluation** rather than leaderboard optimization.
-## Notebook
-- [Fraud Detection Under Concept Drift](notebooks/fraud_detection_concept_drift.ipynb)
+
 
 <img width="989" height="490" alt="recall_over_time" src="https://github.com/user-attachments/assets/ac5df442-b177-487f-b20b-293ea64ce4a9" />
 <img width="989" height="490" alt="precision_over_time" src="https://github.com/user-attachments/assets/1abffc49-eb5b-48e8-b050-23e4591cf165" />
