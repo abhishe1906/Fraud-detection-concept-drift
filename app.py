@@ -28,3 +28,9 @@ def predict(transaction: dict):
         "is_fraud": int(prob >= threshold),
         "threshold": threshold
     }
+@app.get("/")
+def read_root():
+    return {
+        "message": "Fraud Detection API is running",
+        "endpoint": "/predict"
+    }
