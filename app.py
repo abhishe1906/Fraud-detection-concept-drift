@@ -9,35 +9,57 @@ scaler = joblib.load("scaler.pkl")
 encoders = joblib.load("encoders.pkl")
 threshold = joblib.load("threshold.pkl")
 
+from fastapi import FastAPI, HTTPException
+import joblib
+import numpy as np
+
+app = FastAPI()
+
+model = joblib.load("model.pkl")
+scaler = joblib.load("scaler.pkl")
+encoders = joblib.load("encoders.pkl")
+threshold = joblib.load("threshold.pkl")
+
 @app.post("/predict")
 def predict(transaction: dict):
+    try:
+        # Validate keys
+        required_keys = ["Amount", "TransactionType", "Location"]
+        for key in required_keys:
+            if key not in transaction:
+                raise ValueError(f"Missing key: {key}")
 
-    amount = transaction["Amount"]
+        amount = float(transaction["Amount"])
 
-    # Handle unseen TransactionType
-    if transaction["TransactionType"] not in encoders["TransactionType"].classes_:
-        ttype = 0
-    else:
-        ttype = encoders["TransactionType"].transform(
-            [transaction["TransactionType"]]
-        )[0]
+        # Safe encoding: TransactionType
+        if transaction["TransactionType"] in encoders["TransactionType"].classes_:
+            ttype = encoders["TransactionType"].transform(
+                [transaction["TransactionType"]]
+            )[0]
+        else:
+            ttype = 0  # fallback
 
-    # Handle unseen Location
-    if transaction["Location"] not in encoders["Location"].classes_:
-        location = 0
-    else:
-        location = encoders["Location"].transform(
-            [transaction["Location"]]
-        )[0]
+        # Safe encoding: Location
+        if transaction["Location"] in encoders["Location"].classes_:
+            location = encoders["Location"].transform(
+                [transaction["Location"]]
+            )[0]
+        else:
+            location = 0  # fallback
 
-    X = scaler.transform([[amount, ttype, location]])
-    prob = model.predict_proba(X)[0][1]
+        X = scaler.transform([[amount, ttype, location]])
+        prob = model.predict_proba(X)[0][1]
 
-    return {
-        "fraud_probability": round(float(prob), 4),
-        "is_fraud": int(prob >= threshold),
-        "threshold": threshold
-    }
+        return {
+            "fraud_probability": round(float(prob), 4),
+            "is_fraud": int(prob >= threshold),
+            "threshold": threshold
+        }
+
+    except Exception as e:
+        # This makes debugging MUCH easier
+        raise HTTPException(status_code=500, detail=str(e))
+
 
 @app.get("/")
 def read_root():
